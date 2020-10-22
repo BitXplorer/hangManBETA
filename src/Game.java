@@ -16,17 +16,15 @@ public class Game {
     public Game() {
 
         ArrayList<String> wordList = new ArrayList<>();
-        Game.getGameWords(wordList); //Metod fyller listan med ord från filen
-        String secretWord = Game.getRandomGameWord(wordList); //hämtar slumpat ord från listan
+        Game.getGameWords(wordList); //Method which fills the list of words from file.
+        String secretWord = Game.getRandomGameWord(wordList); //Collects random word from list.
 
         this.secretWord = new String[secretWord.length()];
         this.uncoveredLetters = new String[secretWord.length()];
-        this.guessedLetters = guessedLetters;
-        this.hangCounter = hangCounter;
         this.noOfLetters = secretWord.length();
         this.gameRun=true;
 
-        for (int i=0;i<secretWord.length();i++) { // Fyller en array med understreck, för att visa status på ordet man gissar på
+        for (int i=0;i<secretWord.length();i++) { //Fills and array with "_" to show status on guessed word.
             this.uncoveredLetters[i]="_";
         }
 
@@ -39,12 +37,11 @@ public class Game {
      * Method for extracting words from a .txt into an ArrayList.
      * Words need to be separated by new lines.
      * Tries to do so from a file named "game_words.txt".
-     * @param list name of list you want to populate.
+     * list name of list you want to populate.
      */
     public static void getGameWords(ArrayList<String>list) {
         String gameWord;
         try {
-            File myFile = new File("game_words.txt");
             Scanner getter = new Scanner(new File("game_words.txt"));
 
             while (getter.hasNextLine()) {
@@ -116,7 +113,7 @@ public class Game {
                 gameRun = false;
                 Player.addPlayed();
 
-                System.out.println("Game over!\nWould you like to play again?");
+                System.out.println("You failed to complete the word. Game over!\nWould you like to play again? (YES) or (NO):");
                 playAgain();
             }
         }
@@ -183,7 +180,6 @@ public class Game {
      */
     public static void runProgram() throws IOException, ClassNotFoundException {
         Player.loadPlayersFromFile();
-        System.out.println(Player.getCurrentPlayers());
         Menu.showMenu();
     }
 
@@ -194,9 +190,8 @@ public class Game {
     public void showGame() throws IOException {
         while (gameRun) { //ensures that game will only play if gameRun has been set to (true)
             if (!gameWin()) { //this codeblock will run if player has not yet won
-
                 System.out.println("Hey " + Player.getName() +"! I'm thinking of a word consisting of: " +
-                        this.noOfLetters + " letters");
+                        this.noOfLetters + " letters. You have max 10 tries!");
                 System.out.println("So far you've made this progress: " + getUncoveredLetters());
                 System.out.println("You've already guessed the following letters: " + this.guessedLetters);
                 System.out.println("Hang-o-meter: " + this.hangCounter);
@@ -205,7 +200,7 @@ public class Game {
                 while (doubleLetter(guessedLetter)) {
                     guessedLetter = Menu.getAlpha();
                 }
-                System.out.println("You guessed: " + guessedLetter);
+                System.out.println("You guessed: " + guessedLetter + "\n\n");
                 update(guessedLetter);
             }
             else { //when player has guessed entire word correctly

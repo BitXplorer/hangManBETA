@@ -14,12 +14,11 @@ public class Menu {
      * @return value a validated integer value.
      */
     private static int getInt(int value) {
-
         Scanner in = new Scanner(System.in);
+        System.out.print("Enter a number: ");
 
         if (in.hasNextInt()) { // If input is a valid Integer
             value = in.nextInt();
-            System.out.println("Input is an Integer. ");
         }
         else{ // Else input is not an Integer, error message
             System.out.println("Input is not an Integer.");
@@ -36,8 +35,7 @@ public class Menu {
         Scanner in = new Scanner(System.in);
         String input = "";
 
-        if (in.hasNextLine())
-        {
+        if (in.hasNextLine()) {
             input = in.nextLine();
             if (input.length()<1 ||Character.isWhitespace(input.charAt(0)))
             {
@@ -80,26 +78,26 @@ public class Menu {
         System.out.println(
                 "\nHangMan 1.0  \n" +
                         "\n MENU  \n" +
-                        " Enter a number: \n 1. Play\n 2. Load player\n 3. Save player\n 4. Quit \n");
+                        " 1. Play\n 2. Load player\n 3. Save player\n 4. Quit \n");
 
         int input = getInt(0);
 
         if (input > 4 || input < 1) { // If input is not a valid Int
             System.out.println("Input is not a valid Integer");
-            System.out.println("Enter a valid Integer: ");
+            System.out.println("Enter a Integer between 1-4: ");
             showMenu();
         }
         if (input == 1) {
             System.out.println("1. Play\n");
-            //Player.createPlayer(); // todo Byt med rätt objekt / metod / klass
+
             Player.checkPlayer();
         } else if (input == 2) {
             System.out.println("2. Load player\n");
-            Player.loadPlayer(); // todo Byt med rätt objekt / metod / klass
+            Player.loadPlayer();
 
         } else if (input == 3) {
             System.out.println("3. Save player\n");
-            Player.savePlayersToFile(Player.getCurrentPlayers()); // todo Byt med rätt objekt / metod / klass
+            Player.savePlayersToFile();
 
         } else if (input == 4) {
             System.out.println("4. Quit \n Thanks for playing. =)");

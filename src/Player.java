@@ -23,7 +23,7 @@ public class Player implements Serializable {
     private static int currentNumber;
     private static boolean hasPlayer = false;
 
-    private static ArrayList<Player> currentPlayers = new ArrayList<Player>();
+    private static ArrayList<Player> currentPlayers = new ArrayList<>();
 
     private static Player activePlayer = new Player("",0,0);
 
@@ -50,15 +50,6 @@ public class Player implements Serializable {
     }
 
     /**
-     * getCurrentPlayers();
-     * used in the Menu.showMenu(); input 3, Save players, to specify the players to save
-     * @return currentPlayers
-     */
-    public static ArrayList<Player> getCurrentPlayers() {
-        return currentPlayers;
-    }
-
-    /**
      * addWins();
      * adds one victory point to the players victory points when the player wins a game.
      */
@@ -82,7 +73,7 @@ public class Player implements Serializable {
      * checks if there is yet an activePlayer or not,
      * if there is an activePlayer the game will start.
      * else createPlayer(); will be called.
-     * @throws IOException
+     * @throws IOException when file is not found.
      */
     public static void checkPlayer() throws IOException {
         if ( hasPlayer ){
@@ -121,7 +112,6 @@ public class Player implements Serializable {
 
         System.out.println("Enter a player name: ");
         String newName = Menu.getString();
-        System.out.println(newName);
 
         while (i < currentPlayers.size() && !found) {
             if (newName.equals(currentPlayers.get(i).name)) {
@@ -132,7 +122,6 @@ public class Player implements Serializable {
             }
         }
         if (found) {
-            System.out.println(newName);
             System.out.println("Player " + newName + " found at position: " + i);
             System.out.println(currentPlayers.get(i));
             System.out.println("Name already exists.");
@@ -208,9 +197,8 @@ public class Player implements Serializable {
      * (Try the input on the file are objects, catches with an exception).
      * The players on the loadedPlayers-list is then added to the list of the currentPlayers.
      *
-     * @return loadedPlayers
-     * @throws IOException
-     * @throws ClassNotFoundException
+     * @throws IOException when file isn't found
+     * @throws ClassNotFoundException when class not found.
      */
 
     public static ArrayList<Player> loadPlayersFromFile() throws IOException, ClassNotFoundException {
@@ -242,7 +230,7 @@ public class Player implements Serializable {
             loadedName = currentPlayers.get(i).name; // Gets the name of the Player
             System.out.println(loadedName); // Prints the name
         }
-        System.out.println("Enter the name of the player to load.");
+        System.out.println("\nEnter the name of the player to load: ");
         String text = Menu.getString();
 
         int i = 0;
@@ -287,7 +275,7 @@ public class Player implements Serializable {
      * Prints a confirmation message, then the menu is show again, Menu.showMenu();.
      * @throws IOException
      */
-    public static void savePlayersToFile(ArrayList<Player> arr ) throws IOException {
+    public static void savePlayersToFile() throws IOException {
         addActiveToCurrent();
         File savePlayers = new File ("storedPlayers.txt");
         ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(savePlayers));

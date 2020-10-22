@@ -191,7 +191,7 @@ public class Game {
         while (gameRun) { //ensures that game will only play if gameRun has been set to (true)
             if (!gameWin()) { //this codeblock will run if player has not yet won
                 System.out.println("Hey " + Player.getName() +"! I'm thinking of a word consisting of: " +
-                        this.noOfLetters + " letters. You have max 10 tries!");
+                        this.noOfLetters + " letters. You can fail a maximum of 10 times!");
                 System.out.println("So far you've made this progress: " + getUncoveredLetters());
                 System.out.println("You've already guessed the following letters: " + this.guessedLetters);
                 System.out.println("Hang-o-meter: " + this.hangCounter);

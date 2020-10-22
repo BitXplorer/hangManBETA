@@ -13,7 +13,8 @@ public class Menu {
      *  the integer to return.
      * @return value a validated integer value.
      */
-    private static int getInt(int value) {
+    private static int getInt() {
+        int value = -1;
         Scanner in = new Scanner(System.in);
         System.out.print("Enter a number: ");
 
@@ -80,10 +81,9 @@ public class Menu {
                         "\n MENU  \n" +
                         " 1. Play\n 2. Load player\n 3. Save player\n 4. Quit \n");
 
-        int input = getInt(0);
+        int input = getInt();
 
         if (input > 4 || input < 1) { // If input is not a valid Int
-            System.out.println("Input is not a valid Integer");
             System.out.println("Enter a Integer between 1-4: ");
             showMenu();
         }

@@ -37,7 +37,7 @@ public class Game {
      * Method for extracting words from a .txt into an ArrayList.
      * Words need to be separated by new lines.
      * Tries to do so from a file named "game_words.txt".
-     * list name of list you want to populate.
+     * @param list name of list you want to populate.
      */
     public static void getGameWords(ArrayList<String>list) {
         String gameWord;

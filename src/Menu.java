@@ -10,7 +10,6 @@ public class Menu {
      * A Scanner for an integer input.
      * Validates that the input is an Integer.
      *
-     *  the integer to return.
      * @return value a validated integer value.
      */
     private static int getInt() {
@@ -38,8 +37,7 @@ public class Menu {
 
         if (in.hasNextLine()) {
             input = in.nextLine();
-            if (input.length()<1 ||Character.isWhitespace(input.charAt(0)))
-            {
+            if (input.length()<1 ||Character.isWhitespace(input.charAt(0))) {
                 System.out.println("You have to enter something, you know. Try it again.");
                 return getString();
             }

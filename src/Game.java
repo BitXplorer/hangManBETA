@@ -110,11 +110,10 @@ public class Game {
      */
     public void update(String alpha) throws IOException {
         if (!Arrays.asList(secretWord).contains(alpha)) {
-            this.hangCounter += "*";
-            this.guessedLetters += alpha + " ";
-            if (this.hangCounter.length()==10) {
+            this.hangCounter += "*"; //increases hang counter
+            this.guessedLetters += alpha + " "; //adds guessed letter to String of guessed letters
+            if (this.hangCounter.length()==10) { //check if the hang counter has reached 10
                 gameRun = false;
-
                 Player.addPlayed();
 
                 System.out.println("Game over!\nWould you like to play again?");
@@ -124,10 +123,10 @@ public class Game {
         else {
             for (int i = 0;i< this.secretWord.length;i++) {
                     if (this.secretWord[i].equals(alpha)) {
-                        this.uncoveredLetters[i]=alpha;
+                        this.uncoveredLetters[i]=alpha; //replaces underscore with correct letter.
                     }
             }
-            this.guessedLetters += alpha + " ";
+            this.guessedLetters += alpha + " "; //adds guessed letter to be shown as already guessed.
         }
         showGame();
     }
@@ -178,8 +177,8 @@ public class Game {
     }
 
     /**
-     * Starts the whole program, beginning with showing the Menu.
-     * (Basically does the same as showMenu();)
+     * Starts the whole program, beginning with loading players from list
+     * and then showing the Menu.
      * @throws FileNotFoundException
      */
     public static void runProgram() throws IOException, ClassNotFoundException {
@@ -193,8 +192,8 @@ public class Game {
      * @throws IOException
      */
     public void showGame() throws IOException {
-        while (gameRun) {
-            if (!gameWin()) {
+        while (gameRun) { //ensures that game will only play if gameRun has been set to (true)
+            if (!gameWin()) { //this codeblock will run if player has not yet won
 
                 System.out.println("Hey " + Player.getName() +"! I'm thinking of a word consisting of: " +
                         this.noOfLetters + " letters");
@@ -209,11 +208,11 @@ public class Game {
                 System.out.println("You guessed: " + guessedLetter);
                 update(guessedLetter);
             }
-            else {
+            else { //when player has guessed entire word correctly
                 System.out.println("You won!");
                 System.out.println("The word was: " + getSecretArray());
                 Player.addWins();
-                Player.addPlayed();
+                Player.addPlayed(); //player stats are updated
 
                 gameRun=false;
                 System.out.println("Do you want to play again? (YES) or (NO):");

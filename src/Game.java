@@ -15,6 +15,7 @@ public class Game {
     private boolean gameRun;
     public Game() {
 
+        Player.addPlayed(Player.getPlayerNumber());
         ArrayList<String> wordList = new ArrayList<>();
         Game.getGameWords(wordList); //Method which fills the list of words from file.
         String secretWord = Game.getRandomGameWord(wordList); //Collects random word from list.
@@ -109,6 +110,7 @@ public class Game {
         if (!Arrays.asList(secretWord).contains(alpha)) {
             this.hangCounter += "*"; //increases hang counter
             this.guessedLetters += alpha + " "; //adds guessed letter to String of guessed letters
+            Player.nextPlayer();
             if (this.hangCounter.length()==10) { //check if the hang counter has reached 10
                 gameRun = false;
              //   Player.addPlayed(); // todo fixa in rätt spelare!
@@ -190,27 +192,27 @@ public class Game {
     public void showGame() throws IOException {
         while (gameRun) { //ensures that game will only play if gameRun has been set to (true)
             if (!gameWin()) { //this codeblock will run if player has not yet won
-                Player.nextPlayer(); // todo Här ska vi slänga in loopen med spelare
-                System.out.println("Enter a Player Number:");
-                Player.setPlayerNumber();
-                System.out.println("Hey " + Player.getName() +"! I'm thinking of a word consisting of: " + // todo fixa in namnet!
+
+                System.out.println("Hey " + Player.getName(Player.getPlayerNumber()) +"! I'm thinking of a word consisting of: " +
                         this.noOfLetters + " letters. You can fail a maximum of 10 times!");
                 System.out.println("So far you've made this progress: " + getUncoveredLetters());
                 System.out.println("You've already guessed the following letters: " + this.guessedLetters);
                 System.out.println("Hang-o-meter: " + this.hangCounter);
                 System.out.println("What letter do you want to guess?");
                 String guessedLetter = Menu.getAlpha();
+
                 while (doubleLetter(guessedLetter)) {
                     guessedLetter = Menu.getAlpha();
+
                 }
                 System.out.println("You guessed: " + guessedLetter + "\n\n");
                 update(guessedLetter);
+
             }
             else { //when player has guessed entire word correctly
                 System.out.println("You won!");
                 System.out.println("The word was: " + getSecretArray());
-              //  Player.addWins(); todo fixa in rätt spelare!
-             //   Player.addPlayed(); //player stats are updated todo fixa in rätt spelare!
+                Player.addWins(Player.getPlayerNumber());
 
                 gameRun=false;
                 System.out.println("Do you want to play again? (YES) or (NO):");

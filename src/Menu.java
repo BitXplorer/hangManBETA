@@ -87,7 +87,7 @@ public class Menu {
         }
         if (input == 1) {
             System.out.println("1. Play\n");
-            Player.defaultHasPlayerNumber(); // Set hasPlayerNumber to zero.
+            Player.resetActivePlayers(); // Set hasPlayerNumber to zero.
             Player.addPlayer();
 
         } else if (input == 2) {
@@ -106,6 +106,7 @@ public class Menu {
         } else if (input == 4) {
             System.out.println("4. Highscore \n");
             System.out.println("Här kommer en möjlighet att spara Highscore ligga senare"); // todo Player.highscore();
+            Player.showActivePlayers();
             showMenu();
 
         }else if (input == 5) {

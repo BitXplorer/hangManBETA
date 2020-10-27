@@ -77,29 +77,37 @@ public class Menu {
         System.out.println(
                 "\nHangMan 1.0  \n" +
                         "\n MENU  \n" +
-                        " 1. Play\n 2. Load player\n 3. Save player\n 4. Quit \n");
+                        " 1. Play\n 2. Load game\n 3. Save player\n 4. Highscore \n 5. Quit \n");
 
         int input = getInt();
 
-        if (input > 4 || input < 1) { // If input is not a valid Int
+        if (input > 5 || input < 1) { // If input is not a valid Int
             System.out.println("Enter a Integer between 1-4: ");
             showMenu();
         }
         if (input == 1) {
             System.out.println("1. Play\n");
+            Player.addPlayer();
 
-            Player.checkPlayer();
         } else if (input == 2) {
-            System.out.println("2. Load player\n");
-            Player.loadPlayer();
+            System.out.println("2. Load game\n");
+           // Player.loadPlayer();
+            System.out.println("Här kommer en möjlighet att ladda sparat spel ligga senare"); // todo Player.loadGame();
+            showMenu();
 
         } else if (input == 3) {
-            System.out.println("3. Save player\n");
-            Player.savePlayersToFile();
+            System.out.println("3. Save players\n");
+            System.out.println("Här kommer en möjlighet att spara spelare ligga senare"); // todo Player.savePlayersToFile();
+            showMenu();
+            // Player.savePlayersToFile();
 
         } else if (input == 4) {
-            System.out.println("4. Quit \n Thanks for playing. =)");
+            System.out.println("4. Highscore \n");
+            System.out.println("Här kommer en möjlighet att spara Highscore ligga senare"); // todo Player.highscore();
+            showMenu();
 
-        }
+        }else if (input == 5) {
+            System.out.println("5. Quit \n Thanks for playing. =)");
+    }
     }
 }

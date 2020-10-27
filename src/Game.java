@@ -111,9 +111,9 @@ public class Game {
             this.guessedLetters += alpha + " "; //adds guessed letter to String of guessed letters
             if (this.hangCounter.length()==10) { //check if the hang counter has reached 10
                 gameRun = false;
-                Player.addPlayed();
+             //   Player.addPlayed(); // todo fixa in rätt spelare!
 
-                System.out.println("You failed to complete the word. Game over!\nWould you like to play again? (YES) or (NO):");
+                System.out.println("You failed to complete the word. The word was:" + getSecretArray() + "\n Game over!\nWould you like to play again? (YES) or (NO):");
                 playAgain();
             }
         }
@@ -190,7 +190,7 @@ public class Game {
     public void showGame() throws IOException {
         while (gameRun) { //ensures that game will only play if gameRun has been set to (true)
             if (!gameWin()) { //this codeblock will run if player has not yet won
-                System.out.println("Hey " + Player.getName() +"! I'm thinking of a word consisting of: " +
+                System.out.println("Hey Player.getName() ! I'm thinking of a word consisting of: " + // todo fixa in namnet!
                         this.noOfLetters + " letters. You can fail a maximum of 10 times!");
                 System.out.println("So far you've made this progress: " + getUncoveredLetters());
                 System.out.println("You've already guessed the following letters: " + this.guessedLetters);
@@ -206,8 +206,8 @@ public class Game {
             else { //when player has guessed entire word correctly
                 System.out.println("You won!");
                 System.out.println("The word was: " + getSecretArray());
-                Player.addWins();
-                Player.addPlayed(); //player stats are updated
+              //  Player.addWins(); todo fixa in rätt spelare!
+             //   Player.addPlayed(); //player stats are updated todo fixa in rätt spelare!
 
                 gameRun=false;
                 System.out.println("Do you want to play again? (YES) or (NO):");

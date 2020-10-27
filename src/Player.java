@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Player implements Serializable {
     private static final long serialVersionUID = 1337; // Used to ensure the header of the storedPlayers.txt-files is correct. Have experienced crashes without it.
@@ -11,7 +12,6 @@ public class Player implements Serializable {
      * totalPlayed: the number of total games played.
      *
      * currentNumber: the player's position number from the list of current players, currentPlayers.
-     * hasPlayer: is used to check if any player is selected, to play with or to save.
      *
      * currentPlayers: is a list with the all players, loaded and created.
      * activePlayer: is the player currently used in the game.
@@ -21,11 +21,19 @@ public class Player implements Serializable {
     private int totalPlayed;
 
     private static int currentNumber;
-    private static boolean hasPlayer = false;
+    private static int hasPlayerNumber;
+    private static String text; // Used for the player's name
 
     private static ArrayList<Player> currentPlayers = new ArrayList<>();
 
-    private static Player activePlayer = new Player("",0,0);
+  //  private static Player activePlayer = new Player("",0,0);
+
+    public static Player PlayerOne = new Player("",0,0);
+    public static Player PlayerTwo = new Player("",0,0);
+    public static Player PlayerThree = new Player("",0,0);
+    public static Player PlayerFour = new Player("",0,0);
+
+    public static ArrayList<Player> activePlayers = new ArrayList();
 
     /**
      * Constructor
@@ -45,16 +53,16 @@ public class Player implements Serializable {
      * used in Game.showGame(); to print the name of the, in the game, active player.
      * @return activePlayer.name
      */
-    public static String getName(){
-        return activePlayer.name;
+    public String getName(){
+        return this.name;
     }
 
     /**
      * addWins();
      * adds one victory point to the players victory points when the player wins a game.
      */
-    public static void addWins(){
-        activePlayer.wins = activePlayer.wins + 1;
+    public void addWins(){
+        this.wins = this.wins + 1;
     }
 
     /**
@@ -62,34 +70,74 @@ public class Player implements Serializable {
      * adds one to the players played game counts after a game is played.
      * Shows the players activePlayer's status (current game won and games played).
      */
-    public static void addPlayed(){
-        activePlayer.totalPlayed = activePlayer.totalPlayed + 1;
-        System.out.println(activePlayer);
+    public void addPlayed(){
+        this.totalPlayed = this.totalPlayed + 1;
     }
 
     /**
-     * checkPlayer();
-     * (Option 1. Play from the menu, Menu.showMenu();).
-     * checks if there is yet an activePlayer or not,
-     * if there is an activePlayer the game will start.
-     * else createPlayer(); will be called.
-     * @throws IOException when file is not found.
+     * startGame();
+     * Option for the operator to quit adding payers and start the game.
+     * Operator is forced to start the game if there are 4 active players, hasPlayerNumber == 4.
      */
-    public static void checkPlayer() throws IOException {
-        if ( hasPlayer ){
+    public static void startGame() throws IOException {
+        if (hasPlayerNumber == 4 ) {
+            System.out.println( Player.activePlayers );   // todo listan lär inte behövas senare så ta bort den
             Game.startHangMan();
         }
         else {
-            Player.createPlayer();
+        System.out.println("Do you want to start the game?  (YES) or (NO)?  (MENU) to exit to the menu:");
+        String answer;
+        Scanner in = new Scanner(System.in);
+        if (in.hasNext()) {
+            answer = in.next();
+            if (answer.toUpperCase().equals("YES")) {
+                Game.startHangMan();
+            }
+            else if (answer.toUpperCase().equals("NO")) {
+                addPlayer();
+            }
+            else if (answer.toUpperCase().equals("MENU")) {
+                hasPlayerNumber = 0;
+                Menu.showMenu();
+            }
+            else {
+                System.out.println("Incorrect input. Please try again. ");
+                startGame();
+            }
         }
     }
+    }
 
-    /**
-     * hasPlayer();
-     * switches the instance variable hasPlayer from false to true, hasPlayer is used in checkPlayer();.
-     */
-    public static void hasPlayer() {
-        hasPlayer = true;
+    public static void addPlayer() throws IOException {
+        if ( hasPlayerNumber == 0){
+            loadPlayer();
+        }
+        if ( hasPlayerNumber != 0 && hasPlayerNumber < 4) {
+            System.out.println("Do you want to add another Player to this game?  (YES) or (NO)?  (MENU) to exit to the menu:");
+            String answer;
+            Scanner in = new Scanner(System.in);
+
+            if (in.hasNext()) {
+                answer = in.next();
+                if (answer.toUpperCase().equals("YES")) {
+                    loadPlayer();
+                }
+                else if (answer.toUpperCase().equals("NO")) {
+                    startGame();
+                }
+                else if (answer.toUpperCase().equals("MENU")) {
+                    hasPlayerNumber = 0;
+                    Menu.showMenu();
+                }
+                else {
+                    System.out.println("Incorrect input. Please try again. ");
+                    addPlayer();
+                }
+            }
+        }
+        if (hasPlayerNumber == 4){
+            startGame();
+        }
     }
 
     /**
@@ -106,12 +154,9 @@ public class Player implements Serializable {
      * From the checkPlayer(); the game then starts.
      *
      */
-    public static void createPlayer() throws IOException {
+    public static void createPlayer(String newName) throws IOException {
         int i = 0;
         boolean found = false;
-
-        System.out.println("Enter a player name: ");
-        String newName = Menu.getString();
 
         while (i < currentPlayers.size() && !found) {
             if (newName.equals(currentPlayers.get(i).name)) {
@@ -121,20 +166,27 @@ public class Player implements Serializable {
                 i++;
             }
         }
+
+        if (!found) {
+            while (i < activePlayers.size()) {
+                if (newName.equals(activePlayers.get(i).name)) {
+                    found = true;
+                } else {
+                    i++;
+                }
+            }
+        }
+
         if (found) {
-            System.out.println("Player " + newName + " found at position: " + i);
-            System.out.println(currentPlayers.get(i));
-            System.out.println("Name already exists.");
-            createPlayer();
+            System.out.println("Player " + newName + "already exists.");
+            loadPlayer();
         }
         else {
             Player newPlayer = new Player(newName, 0, 0);
-            System.out.println("Player name, Games played, Games won: ");
-            System.out.println(newPlayer);
             currentPlayers.add(newPlayer);
             currentNumber = currentPlayers.size()-1;
             activatePlayer();
-            checkPlayer();
+            addPlayer();
         }
     }
 
@@ -180,14 +232,41 @@ public class Player implements Serializable {
      * The newly created player, aPlayer, is then sat as the activePlayer instance variable.
      * hasPlayer(); is called to tell the program that there is an activePlayer in the game.
      */
-    public static void activatePlayer() {
+    public static void activatePlayer() throws IOException {
         int i = currentNumber;
         Player aPlayer = new Player(getCurrentName(i), getCurrentWins(i), getCurrentPlayed(i));
-        System.out.println("Player nr: "+ i);
+
+        if (hasPlayerNumber == 3){
+            PlayerFour = aPlayer;
+            activePlayers.add(PlayerFour);
+            hasPlayerNumber = 4;
+        }
+        else if (hasPlayerNumber == 2){
+            PlayerThree = aPlayer;
+            activePlayers.add(PlayerThree);
+            hasPlayerNumber = 3;
+        }
+        else if (hasPlayerNumber == 1){
+            PlayerTwo = aPlayer;
+            activePlayers.add(PlayerTwo);
+            hasPlayerNumber = 2;
+        }
+        else if (hasPlayerNumber == 0){
+            PlayerOne = aPlayer;
+            activePlayers.add(PlayerOne);
+            hasPlayerNumber = 1;
+        }
+        else {
+            PlayerOne = aPlayer;
+            activePlayers.add(PlayerOne);
+            hasPlayerNumber = 1;
+        }
+
         System.out.println(aPlayer);
-        activePlayer=aPlayer;
-        hasPlayer();
+        System.out.println("Player nr: "+ hasPlayerNumber);
     }
+
+
 
     /**
      * loadPlayersFromFile();
@@ -223,18 +302,21 @@ public class Player implements Serializable {
      * If the name is in the list that the player will be loaded (sat to the activePlayer).
      * Else an error message will be shown and returns to the menu.
      */
-    public static int loadPlayer() throws IOException {
+    public static int loadPlayer() throws IOException { // todo do we have to return i ???
         String loadedName = "";
         System.out.println("These are the players from before: ");
         for (int i = 0; i < currentPlayers.size();i++){
             loadedName = currentPlayers.get(i).name; // Gets the name of the Player
             System.out.println(loadedName); // Prints the name
         }
-        System.out.println("\nEnter the name of the player to load: ");
-        String text = Menu.getString();
+        System.out.println("\nEnter the name of the player to load or a new name to create a player: ");
+        text = Menu.getString();
 
         int i = 0;
+        int j = 0;
         boolean found = false;
+        boolean found2 = false;
+
         while (i < currentPlayers.size() && !found) {
             if (text.equals(currentPlayers.get(i).name)) {
                 found = true;
@@ -242,16 +324,46 @@ public class Player implements Serializable {
                 i++;
             }
         }
+
+        while (j < activePlayers.size() && !found2) {
+                if (text.equals(activePlayers.get(j).name)) {
+                    found2 = true;
+                } else {
+                    j++;
+                }
+            }
+
+        if (found2) {
+            System.out.println("Player " + text + " already exists. Enter another name.");
+            loadPlayer();
+        }
+
         if (found) {
-            System.out.println("Player " + text + " found at position: " + i);
-            System.out.println(currentPlayers.get(i));
+            System.out.println( text + " found!");
             currentNumber = i;
             Player.activatePlayer();
-            Player.checkPlayer();
+            addPlayer();
 
         } else {
-            System.out.println("Player " + text + " not found. Back to menu.");
-            Menu.showMenu();
+
+            System.out.println("Do you want to create Player " + text + "? (YES) or (NO):"); // New way in to createPlayer!
+            String answer;
+            Scanner in = new Scanner(System.in);
+
+            if (in.hasNext()) {
+                answer = in.next();
+                if (answer.toUpperCase().equals("YES")) {
+                    createPlayer(text);
+                }
+                else if (answer.toUpperCase().equals("NO")) {
+                    loadPlayer();
+                }
+                else {
+                    System.out.println("Incorrect input. But it is okay, let us pretend it is a NO. ");
+                    loadPlayer();
+                }
+            }
+
         }
         return i;
     }
@@ -262,7 +374,9 @@ public class Player implements Serializable {
      * Used in savePlayersToFile(); to store the activePlayer's progress in the game to the list of current players before the list is saved.
      */
     public static void addActiveToCurrent(){
-        currentPlayers.set(currentNumber,activePlayer);
+        for (int i = 0; i < currentPlayers.size(); i++){
+            currentPlayers.set(currentNumber,currentPlayers.get(i));
+        }
     }
 
     /**
@@ -293,6 +407,6 @@ public class Player implements Serializable {
      */
     @Override
     public String toString(){
-        return "Name: " + name + ", Wins: " + wins + ", Games played: " + totalPlayed + ".\n";
+        return "[Name: " + name + ", Wins: " + wins + ", Games played: " + totalPlayed + "]";
     }
 }

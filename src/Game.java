@@ -190,7 +190,10 @@ public class Game {
     public void showGame() throws IOException {
         while (gameRun) { //ensures that game will only play if gameRun has been set to (true)
             if (!gameWin()) { //this codeblock will run if player has not yet won
-                System.out.println("Hey Player.getName() ! I'm thinking of a word consisting of: " + // todo fixa in namnet!
+                Player.nextPlayer(); // todo Här ska vi slänga in loopen med spelare
+                System.out.println("Enter a Player Number:");
+                Player.setPlayerNumber();
+                System.out.println("Hey " + Player.getName() +"! I'm thinking of a word consisting of: " + // todo fixa in namnet!
                         this.noOfLetters + " letters. You can fail a maximum of 10 times!");
                 System.out.println("So far you've made this progress: " + getUncoveredLetters());
                 System.out.println("You've already guessed the following letters: " + this.guessedLetters);

@@ -87,7 +87,7 @@ public class Menu {
         }
         if (input == 1) {
             System.out.println("1. Play\n");
-            Player.resetActivePlayers(); // Set hasPlayerNumber to zero.
+            Player.resetActivePlayers(); // Set activePlayers.clear(); and hasPlayerNumber to zero.
             Player.addPlayer();
 
         } else if (input == 2) {
@@ -98,10 +98,7 @@ public class Menu {
 
         } else if (input == 3) {
             System.out.println("3. Save players\n");
-            System.out.println("Här kommer en möjlighet att spara spelare ligga senare"); // todo Player.savePlayersToFile();
-            // todo något är skumt med att spara spelare, den sista i currentPlayers-listan sparas över en sista actual-player (actualPlayers-list).
-            showMenu();
-         //   Player.savePlayersToFile();
+            Player.savePlayersToFile();
 
         } else if (input == 4) {
             System.out.println("4. Highscore \n");
@@ -110,6 +107,7 @@ public class Menu {
             showMenu();
 
         }else if (input == 5) {
+            Player.resetActivePlayers();
             System.out.println("5. Quit \n Thanks for playing. =)");
     }
     }

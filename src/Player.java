@@ -77,8 +77,8 @@ public class Player implements Serializable {
      * adds one to the players played game counts after a game is played.
      * Shows the players activePlayer's status (current game won and games played).
      */
-   public static void addPlayed(int j){
-       for ( j = 0; j < activePlayers.size(); j++){
+   public static void addPlayed(){
+       for (int j = 0; j < activePlayers.size(); j++){
            activePlayers.get(j).totalPlayed = activePlayers.get(j).totalPlayed + 1;
        }
     }
@@ -94,7 +94,6 @@ public class Player implements Serializable {
      */
     public static void startGame() throws IOException {
         if (hasPlayerNumber == 4 ) {
-            System.out.println( Player.activePlayers); // todo listan här lär inte behöva skrivas ut
             Game.startHangMan();
         }
         else {
@@ -104,7 +103,6 @@ public class Player implements Serializable {
         if (in.hasNext()) {
             answer = in.next();
             if (answer.toUpperCase().equals("YES")) {
-                System.out.println( Player.activePlayers); // todo listan här lär inte behöva skrivas ut
                 Game.startHangMan();
             }
             else if (answer.toUpperCase().equals("NO")) {
@@ -314,7 +312,7 @@ public class Player implements Serializable {
      * If the name is in the list that the player will be loaded (sat to the activePlayer).
      * Else an error message will be shown and returns to the menu.
      */
-    public static int loadPlayer() throws IOException { // todo do we have to return i ???
+    public static int loadPlayer() throws IOException {
         String loadedName = "";
         System.out.println("These are the players from before: ");
         for (int i = 0; i < currentPlayers.size();i++){
@@ -386,10 +384,16 @@ public class Player implements Serializable {
      * Used in savePlayersToFile(); to store the activePlayer's progress in the game to the list of current players before the list is saved.
      */
     public static void addActiveToCurrent(){
-        for (int i = 0; i < currentPlayers.size(); i++){
-            currentPlayers.set(currentNumber,currentPlayers.get(i));
+
+      for ( int j = 0; j < activePlayers.size(); j++) {
+        for (int i = 0; i < currentPlayers.size(); i++) {
+            if (currentPlayers.get(i).name.equals(activePlayers.get(j).name)) { // if name i (from currentPlayers) is the same as name j (from activePlayers),
+                currentPlayers.set(i,(activePlayers.get(j))); // write over the found player i (name i) with the player j (name j).
+            }
+            }
         }
     }
+
 
     /**
      * savePlayersToFile();
@@ -415,8 +419,12 @@ public class Player implements Serializable {
     /**
      * Randomizes the players turn order.
      */
-    public static void randomizeTurn(){ // todo Ska denna ligga här eller i game?! Något mer som behövs för den?
+    public static void randomizeTurn(){
         Collections.shuffle(activePlayers);
+        System.out.println("The turn order is: ");
+        for ( int j = 0; j < activePlayers.size(); j++) {
+            System.out.println( (j+1) + " " + activePlayers.get(j).name);
+        }
     }
 
     /**
@@ -426,6 +434,6 @@ public class Player implements Serializable {
      */
     @Override
     public String toString(){
-        return "[Name: " + name + ", Wins: " + wins + ", Games played: " + totalPlayed + "]";
+        return "[Name: " + name + ", Wins: " + wins + ", Games played: " + totalPlayed + "] \n";
     }
 }

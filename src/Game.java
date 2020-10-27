@@ -15,7 +15,9 @@ public class Game {
     private boolean gameRun;
     public Game() {
 
-        Player.addPlayed(Player.getPlayerNumber());
+        Player.addPlayed();
+        Player.randomizeTurn();
+
         ArrayList<String> wordList = new ArrayList<>();
         Game.getGameWords(wordList); //Method which fills the list of words from file.
         String secretWord = Game.getRandomGameWord(wordList); //Collects random word from list.
@@ -113,7 +115,7 @@ public class Game {
             Player.nextPlayer();
             if (this.hangCounter.length()==10) { //check if the hang counter has reached 10
                 gameRun = false;
-             //   Player.addPlayed(); // todo fixa in rätt spelare!
+
 
                 System.out.println("You failed to complete the word. The word was:" + getSecretArray() + "\n Game over!\nWould you like to play again? (YES) or (NO):");
                 playAgain();
@@ -210,8 +212,9 @@ public class Game {
 
             }
             else { //when player has guessed entire word correctly
-                System.out.println("You won!");
+                System.out.println(Player.getName(Player.getPlayerNumber())+"! You won!");
                 System.out.println("The word was: " + getSecretArray());
+
                 Player.addWins(Player.getPlayerNumber());
 
                 gameRun=false;

@@ -115,7 +115,8 @@ public class Game {
             Player.nextPlayer();
             if (this.hangCounter.length()==10) { //check if the hang counter has reached 10
                 gameRun = false;
-
+                //TODO hantering av single/multiplayer mode.
+                //TODO här ska spelaren tas bort från matchen, flyttas tillbaka till currentPlayers med ny statistik, currentPoints ska rensas för denne.
 
                 System.out.println("You failed to complete the word. The word was:" + getSecretArray() + "\n Game over!\nWould you like to play again? (YES) or (NO):");
                 playAgain();
@@ -193,7 +194,7 @@ public class Game {
      */
     public void showGame() throws IOException {
         while (gameRun) { //ensures that game will only play if gameRun has been set to (true)
-            if (!gameWin()) { //this codeblock will run if player has not yet won
+            if (!gameWin()) { //this code block will run if player has not yet won
 
                 System.out.println("Hey " + Player.getName(Player.getPlayerNumber()) +"! I'm thinking of a word consisting of: " +
                         this.noOfLetters + " letters. You can fail a maximum of 10 times!");
@@ -203,7 +204,7 @@ public class Game {
                 System.out.println("What letter do you want to guess?");
                 String guessedLetter = Menu.getAlpha();
 
-                while (doubleLetter(guessedLetter)) {
+                while (doubleLetter(guessedLetter)) { // if letter has already been used, program tries to fetch another letter
                     guessedLetter = Menu.getAlpha();
 
                 }
@@ -215,7 +216,10 @@ public class Game {
                 System.out.println(Player.getName(Player.getPlayerNumber())+"! You won!");
                 System.out.println("The word was: " + getSecretArray());
 
-                Player.addWins(Player.getPlayerNumber());
+                //Player.addWins(Player.getPlayerNumber()); //TODO denna bör ske när en spelare finns kvar
+                Player.addPoint(Player.getPlayerNumber());
+                Player.updateAverageScore();
+                Player.updateMaxScore();
 
                 gameRun=false;
                 System.out.println("Do you want to play again? (YES) or (NO):");

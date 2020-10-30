@@ -1,3 +1,4 @@
+import javax.sound.midi.Soundbank;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,11 +30,15 @@ public class Player implements Serializable {
     private static int hasPlayerNumber;
     private static int playerNumber;
 
+    private static int computerPlayerNumber = 0;
+
     private static String text; // Used for the player's name
 
     private static ArrayList<Player> currentPlayers = new ArrayList<>();
 
     private static ArrayList<Player> activePlayers = new ArrayList<>();
+
+    private static ArrayList<Player> removedPlayers = new ArrayList<>();
 
     /**
      * Constructor
@@ -129,7 +134,7 @@ public class Player implements Serializable {
      * Option for the operator to quit adding payers and start the game.
      * Operator is forced to start the game if there are 4 active players, hasPlayerNumber == 4.
      */
-    public static void startGame() throws IOException {
+    public static void startGame() throws IOException, InterruptedException {
         if (hasPlayerNumber == 4) {
             Game.startHangMan();
         } else {
@@ -158,7 +163,7 @@ public class Player implements Serializable {
         activePlayers.clear();
     }
 
-    public static void addPlayer() throws IOException {
+    public static void addPlayer() throws IOException, InterruptedException {
         if (hasPlayerNumber == 0) {
             loadPlayer();
         }
@@ -172,7 +177,7 @@ public class Player implements Serializable {
                 if (answer.toUpperCase().equals("YES")) {
                     loadPlayer();
                 } else if (answer.toUpperCase().equals("NO")) {
-                    startGame();
+                    addComputerPlayer();
                 } else if (answer.toUpperCase().equals("MENU")) {
                     hasPlayerNumber = 0;
                     Menu.showMenu();
@@ -187,6 +192,24 @@ public class Player implements Serializable {
         }
     }
 
+
+    public static void addComputerPlayer() throws IOException, InterruptedException {
+        System.out.println("Do you want to add a Computer Player?   (YES) or (NO)?");
+        String answer;
+        Scanner in = new Scanner(System.in);
+        if (in.hasNext()) {
+            answer = in.next();
+            if (answer.toUpperCase().equals("YES")) {
+                createComputerPlayer();
+            } else if (answer.toUpperCase().equals("NO")) {
+                startGame(); }
+        } else {
+            System.out.println("Incorrect input. Please try again. ");
+            addComputerPlayer();
+        }
+    }
+
+
     /**
      * createPlayer();
      * called in the Menu.showMenu();, option 1, to create a player.
@@ -200,9 +223,14 @@ public class Player implements Serializable {
      * checkPlayer(); is called to confirm that the player is added as the activePlayer.
      * From the checkPlayer(); the game then starts.
      */
-    public static void createPlayer(String newName) throws IOException {
+    public static void createPlayer(String newName) throws IOException, InterruptedException {
         int i = 0;
         boolean found = false;
+
+        if (newName.contains("Computer")){
+            System.out.println(newName + " is not a valid name. Please enter a name without the word \"Computer\".");
+            loadPlayer();
+        }
 
         while (i < currentPlayers.size() && !found) {
             if (newName.equals(currentPlayers.get(i).name)) {
@@ -234,6 +262,16 @@ public class Player implements Serializable {
         }
     }
 
+    public static void createComputerPlayer() throws IOException, InterruptedException {
+        computerPlayerNumber++;
+        String computerName = "Computer Player " + computerPlayerNumber;
+        Player NewComputerPlayer = new Player(computerName, 0,0,0,0,0, 0);
+        currentPlayers.add(NewComputerPlayer);
+        currentNumber = currentPlayers.size() - 1;
+        activatePlayer();
+        addPlayer();
+    }
+
     /**
      * getCurrentName();
      * used in activatePlayer();, from the currentNumber, used to get the name of the player, currentName.
@@ -241,9 +279,10 @@ public class Player implements Serializable {
      * @param i from the currentNumber.
      * @return currentName
      */
-    public static String getCurrentName(int i) {
-        String currentName = (currentPlayers.get(i).name);
-        return currentName;
+    private static String getCurrentName(int i) {
+
+            String currentName = (currentPlayers.get(i).name);
+            return currentName;
     }
 
     /**
@@ -320,9 +359,12 @@ public class Player implements Serializable {
             activePlayers.add(0, aPlayer);
             hasPlayerNumber = 1;
         }
-        System.out.println(aPlayer);
-        System.out.println("Player nr: " + hasPlayerNumber);
-    }
+
+            System.out.println(aPlayer);
+            System.out.println("Player nr: " + hasPlayerNumber);
+        }
+
+
 
 
     /**
@@ -359,7 +401,7 @@ public class Player implements Serializable {
      * If the name is in the list that the player will be loaded (sat to the activePlayer).
      * Else an error message will be shown and returns to the menu.
      */
-    public static int loadPlayer() throws IOException {
+    public static int loadPlayer() throws IOException, InterruptedException {
         String loadedName = "";
         System.out.println("These are the players from before: ");
         for (int i = 0; i < currentPlayers.size();i++){
@@ -452,7 +494,7 @@ public class Player implements Serializable {
      * Prints a confirmation message, then the menu is show again, Menu.showMenu();.
      * @throws IOException
      */
-    public static void savePlayersToFile() throws IOException {
+    public static void savePlayersToFile() throws IOException, InterruptedException {
         addActiveToCurrent();
         File savePlayers = new File ("storedPlayers.txt");
         ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(savePlayers));
@@ -471,6 +513,64 @@ public class Player implements Serializable {
         System.out.println("The turn order is: ");
         for ( int j = 0; j < activePlayers.size(); j++) {
             System.out.println( (j+1) + " " + activePlayers.get(j).name);
+        }
+    }
+
+    public static void removeComputerPlayer(){
+        computerPlayerNumber = 0;
+        for(int i = 0; activePlayers.size() > i; i++) {
+            if (activePlayers.get(i).name.contains("Computer")) {
+                activePlayers.remove(activePlayers.get(i));
+                i--;
+            }
+        }
+
+        for(int i = 0; currentPlayers.size() > i; i++){
+                if (currentPlayers.get(i).name.contains("Computer")) {
+                    currentPlayers.remove(currentPlayers.get(i));
+                    i--;
+                }
+        }
+  }
+
+    public static void removePlayer(){
+        System.out.print(Player.getName(Player.getPlayerNumber()));
+        System.out.println(" has been removed from this game.");
+        removedPlayers.add(activePlayers.get(Player.getPlayerNumber()));
+        activePlayers.remove(Player.getPlayerNumber());
+    }
+
+    public static void playersLeft() throws IOException, InterruptedException {
+        if (activePlayers.size() > 1) {
+            nextPlayer();
+            System.out.println("\nCONTINUE this game? SAVE this game and go back to the menu? Or to go back the MENU without saving?\n Enter (CONTINUE), (SAVE) or (MENU).");
+
+            String answer;
+            Scanner in = new Scanner(System.in);
+
+            if (in.hasNext()) {
+                answer = in.next();
+                if (answer.toUpperCase().equals("CONTINUE")) {
+                    Game.startHangMan();
+                } else if (answer.toUpperCase().equals("SAVE")) {
+                    System.out.println("ÄNNU FINNS INGEN SPARFUNKTION!!!!"); // todo SPARFUNKTION MITT I SPELET! / JN
+                    Menu.showMenu();
+                } else if (answer.toUpperCase().equals("MENU")) {
+                    Menu.showMenu();
+                } else {
+                    System.out.println("Incorrect input. Please enter (CONTINUE), (SAVE) or (MENU): ");
+                    playersLeft();
+                }
+            } }
+        else {
+                System.out.println("\n Game over!\nWould you like to play again? (YES) or (NO):");
+                Game.playAgain();
+            }
+        }
+
+        public static void addRemoved(){
+        for (int i = 0; removedPlayers.size() > i; i++){
+            activePlayers.add(removedPlayers.get(i));
         }
     }
 

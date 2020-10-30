@@ -72,7 +72,10 @@ public class Menu {
      * Also validates the input between 1-4.
      * Takes the player to the player's choice.
      */
-    public static void showMenu() throws IOException {
+    public static void showMenu() throws IOException, InterruptedException {
+
+        Player.addRemoved();
+        Player.removeComputerPlayer();
 
         System.out.println(
                 "\nHangMan 1.0  \n" +

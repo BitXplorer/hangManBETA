@@ -72,7 +72,7 @@ public class Menu {
      * Also validates the input between 1-4.
      * Takes the player to the player's choice.
      */
-    public static void showMenu() throws IOException, InterruptedException {
+    public static void showMenu() throws IOException, InterruptedException, ClassNotFoundException {
 
         Player.addRemoved();
         Player.removeComputerPlayer();
@@ -90,14 +90,12 @@ public class Menu {
         }
         if (input == 1) {
             System.out.println("1. Play\n");
-            Player.resetActivePlayers(); // Set activePlayers.clear(); and hasPlayerNumber to zero.
+            Player.resetActivePlayers(); // Set hasPlayerNumber to zero, set playerNumber to zero, activePlayers.clear(); and removedPlayers.clear();.
             Player.addPlayer();
 
         } else if (input == 2) {
             System.out.println("2. Load game\n");
-           // Player.loadPlayer();
-            System.out.println("Här kommer en möjlighet att ladda sparat spel ligga senare"); // todo Player.loadGame();
-            showMenu();
+            Player.loadGame();
 
         } else if (input == 3) {
             System.out.println("3. Save players\n");

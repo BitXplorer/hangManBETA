@@ -1,4 +1,4 @@
-import javax.sound.midi.Soundbank;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,7 +59,7 @@ public class Player implements Serializable {
     }
 
     public static int getPlayerNumber() {
-        return playerNumber;
+       return playerNumber;
     }
 
     public static void nextPlayer() {
@@ -134,7 +134,7 @@ public class Player implements Serializable {
      * Option for the operator to quit adding payers and start the game.
      * Operator is forced to start the game if there are 4 active players, hasPlayerNumber == 4.
      */
-    public static void startGame() throws IOException, InterruptedException {
+    public static void startGame() throws IOException, InterruptedException, ClassNotFoundException {
         if (hasPlayerNumber == 4) {
             Game.startHangMan();
         } else {
@@ -148,7 +148,6 @@ public class Player implements Serializable {
                 } else if (answer.toUpperCase().equals("NO")) {
                     addPlayer();
                 } else if (answer.toUpperCase().equals("MENU")) {
-                    hasPlayerNumber = 0;
                     Menu.showMenu();
                 } else {
                     System.out.println("Incorrect input. Please try again. ");
@@ -158,12 +157,14 @@ public class Player implements Serializable {
         }
     }
 
-    public static void resetActivePlayers() { //Used to restart the activePlayers-list.
+    public static void resetActivePlayers() { //Used to reset the activePlayers-list.
         hasPlayerNumber = 0;
+        playerNumber = 0;
         activePlayers.clear();
+        removedPlayers.clear();
     }
 
-    public static void addPlayer() throws IOException, InterruptedException {
+    public static void addPlayer() throws IOException, InterruptedException, ClassNotFoundException {
         if (hasPlayerNumber == 0) {
             loadPlayer();
         }
@@ -193,7 +194,7 @@ public class Player implements Serializable {
     }
 
 
-    public static void addComputerPlayer() throws IOException, InterruptedException {
+    public static void addComputerPlayer() throws IOException, InterruptedException, ClassNotFoundException {
         System.out.println("Do you want to add a Computer Player?   (YES) or (NO)?");
         String answer;
         Scanner in = new Scanner(System.in);
@@ -223,7 +224,7 @@ public class Player implements Serializable {
      * checkPlayer(); is called to confirm that the player is added as the activePlayer.
      * From the checkPlayer(); the game then starts.
      */
-    public static void createPlayer(String newName) throws IOException, InterruptedException {
+    public static void createPlayer(String newName) throws IOException, InterruptedException, ClassNotFoundException {
         int i = 0;
         boolean found = false;
 
@@ -262,7 +263,7 @@ public class Player implements Serializable {
         }
     }
 
-    public static void createComputerPlayer() throws IOException, InterruptedException {
+    public static void createComputerPlayer() throws IOException, InterruptedException, ClassNotFoundException {
         computerPlayerNumber++;
         String computerName = "Computer Player " + computerPlayerNumber;
         Player NewComputerPlayer = new Player(computerName, 0,0,0,0,0, 0);
@@ -380,15 +381,33 @@ public class Player implements Serializable {
      */
 
     public static ArrayList<Player> loadPlayersFromFile() throws IOException, ClassNotFoundException {
-        ObjectInputStream input = new ObjectInputStream(new FileInputStream("storedPlayers.txt"));
+
+
         ArrayList<Player> loadedPlayers = new ArrayList<>();
-        try (input){
-            Object player = input.readObject();
-            loadedPlayers = (ArrayList<Player>) player;
-        } catch (IOException  e) {
-            e.printStackTrace();
+
+        try {File savedPlayersFile = new File("storedPlayers.txt");
+        if (savedPlayersFile.exists()){
+            ObjectInputStream input = new ObjectInputStream(new FileInputStream("storedPlayers.txt"));
+
+                Object player = input.readObject();
+                loadedPlayers = (ArrayList<Player>) player;
+
+            input.close();
+            currentPlayers.addAll(loadedPlayers);
+            return loadedPlayers;
         }
-        currentPlayers.addAll(loadedPlayers);
+        else{
+
+            File createPlayersFile = new File ("storedPlayers.txt");
+            ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(createPlayersFile));
+            output.writeObject(currentPlayers); // Writes the object to the file (if no file, currentPlayers is empty).
+            output.close();
+
+        }
+       }catch (IOException e) {
+           System.out.println("Error.");
+           e.printStackTrace();
+       }
         return loadedPlayers;
     }
 
@@ -401,7 +420,7 @@ public class Player implements Serializable {
      * If the name is in the list that the player will be loaded (sat to the activePlayer).
      * Else an error message will be shown and returns to the menu.
      */
-    public static int loadPlayer() throws IOException, InterruptedException {
+    public static int loadPlayer() throws IOException, InterruptedException, ClassNotFoundException {
         String loadedName = "";
         System.out.println("These are the players from before: ");
         for (int i = 0; i < currentPlayers.size();i++){
@@ -494,7 +513,7 @@ public class Player implements Serializable {
      * Prints a confirmation message, then the menu is show again, Menu.showMenu();.
      * @throws IOException
      */
-    public static void savePlayersToFile() throws IOException, InterruptedException {
+    public static void savePlayersToFile() throws IOException, InterruptedException, ClassNotFoundException {
         addActiveToCurrent();
         File savePlayers = new File ("storedPlayers.txt");
         ObjectOutputStream output = new ObjectOutputStream(new FileOutputStream(savePlayers));
@@ -504,6 +523,58 @@ public class Player implements Serializable {
         System.out.println("Players saved.");
         Menu.showMenu();
     }
+
+    public static void saveGame() throws IOException, InterruptedException, ClassNotFoundException {
+
+        String activePlayersFile = "savedActivePlayers.txt"; // Names the file
+        File savedActivePlayers = new File(activePlayersFile); // Creates a file
+        ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(savedActivePlayers));
+        out.writeObject( activePlayers );
+        out.close(); // Important to close the file.
+
+        String removedPlayersFile = "savedRemovedPlayers.txt"; // Names the file
+        File savedRemovedPlayers = new File(removedPlayersFile); // Creates a file
+        ObjectOutputStream outs = new ObjectOutputStream(new FileOutputStream(savedRemovedPlayers));
+        outs.writeObject( removedPlayers );
+        outs.close(); // Important to close the file.
+
+        System.out.println("Game has been saved.");
+        Menu.showMenu();
+    }
+
+    public static void loadGame() throws IOException, ClassNotFoundException {
+
+        String activePlayersFile = "savedActivePlayers.txt";
+        String removedPlayersFile = "savedRemovedPlayers.txt";
+        try {
+            File savedActivePlayers = new File(activePlayersFile);
+            File savedRemovedPlayers = new File(removedPlayersFile);
+            if (!savedActivePlayers.exists() || !savedRemovedPlayers.exists()) { // If the file do not exists then do nothing.
+                System.out.println("There is no game saved.");
+                Menu.showMenu();
+            } else {
+                resetActivePlayers(); // If there is players from a running game, those players are removed from the two arrays of players.
+
+                ObjectInputStream input = new ObjectInputStream(new FileInputStream("savedActivePlayers.txt"));
+                Object activePlayer = input.readObject();
+                activePlayers = (ArrayList<Player>) activePlayer;
+
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream("savedRemovedPlayers.txt"));
+                Object removedPlayer = in.readObject();
+                removedPlayers = (ArrayList<Player>) removedPlayer;
+
+                Game.startHangMan();
+
+                }
+
+            }catch (IOException | InterruptedException e) {
+            System.out.println("Error.");
+            e.printStackTrace();
+        }
+    }
+
+
+
 
     /**
      * Randomizes the players turn order.
@@ -540,7 +611,7 @@ public class Player implements Serializable {
         activePlayers.remove(Player.getPlayerNumber());
     }
 
-    public static void playersLeft() throws IOException, InterruptedException {
+    public static void playersLeft() throws IOException, InterruptedException, ClassNotFoundException {
         if (activePlayers.size() > 1) {
             nextPlayer();
             System.out.println("\nCONTINUE this game? SAVE this game and go back to the menu? Or to go back the MENU without saving?\n Enter (CONTINUE), (SAVE) or (MENU).");
@@ -553,8 +624,7 @@ public class Player implements Serializable {
                 if (answer.toUpperCase().equals("CONTINUE")) {
                     Game.startHangMan();
                 } else if (answer.toUpperCase().equals("SAVE")) {
-                    System.out.println("ÄNNU FINNS INGEN SPARFUNKTION!!!!"); // todo SPARFUNKTION MITT I SPELET! / JN
-                    Menu.showMenu();
+                    saveGame();
                 } else if (answer.toUpperCase().equals("MENU")) {
                     Menu.showMenu();
                 } else {

@@ -2,6 +2,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -14,7 +15,7 @@ public class Game {
     private String hangCounter= "";
     private final int noOfLetters;
     private static boolean gameRun;
-    public Game() {
+    public Game() throws FileNotFoundException, InterruptedException {
 
         Player.addPlayed();
         Player.randomizeTurn();
@@ -43,7 +44,7 @@ public class Game {
      * Tries to do so from a file named "game_words.txt".
      * @param list name of list you want to populate.
      */
-    public static void getGameWords(ArrayList<String>list) {
+    public static void getGameWords(ArrayList<String>list) throws FileNotFoundException, InterruptedException {
         String gameWord;
         try {
             Scanner getter = new Scanner(new File("game_words.txt"));
@@ -53,7 +54,22 @@ public class Game {
                 list.add(gameWord);
             }
         } catch (FileNotFoundException exception) {
-            System.out.println("Couldn't find file: game_words.txt");
+            System.out.println("\nCouldn't find file: game_words.txt.\nCreates a game_words.txt (with only one word in it) to the game folder.\nUse the game_words.txt to put new words in the game. Each new word needs to be on a new row. Letters only in the words. \nSorry for the inconvenience!\n");
+            File createSavedPlayersFile = new File("game_words.txt");
+            PrintWriter out = new PrintWriter(createSavedPlayersFile);
+            out.println("SHAME");
+            out.close();
+
+            Thread.sleep(3000);
+
+
+            Scanner getter = new Scanner(new File("game_words.txt"));
+
+            while (getter.hasNextLine()) {
+                gameWord = getter.nextLine();
+                list.add(gameWord);
+            }
+
         }
     }
 
@@ -109,7 +125,7 @@ public class Game {
      * @param alpha guessed letter.
      * @throws IOException
      */
-    public void update(String alpha) throws IOException, InterruptedException {
+    public void update(String alpha) throws IOException, InterruptedException, ClassNotFoundException {
         if (!Arrays.asList(secretWord).contains(alpha)) {
             this.hangCounter += "*"; //increases hang counter
             this.guessedLetters += alpha + " "; //adds guessed letter to String of guessed letters
@@ -151,7 +167,7 @@ public class Game {
      * Use after win/loss.
      * @throws IOException
      */
-    public static void playAgain() throws IOException, InterruptedException {
+    public static void playAgain() throws IOException, InterruptedException, ClassNotFoundException {
         String answer;
         Scanner in = new Scanner(System.in);
 
@@ -177,7 +193,7 @@ public class Game {
      * Runs an instance of the game "Hangman".
      * @throws FileNotFoundException
      */
-    public static void startHangMan() throws IOException, InterruptedException {
+    public static void startHangMan() throws IOException, InterruptedException, ClassNotFoundException {
         Game game1 = new Game();
         game1.showGame();
     }
@@ -192,13 +208,14 @@ public class Game {
         Menu.showMenu();
     }
 
-    private void computerTurn() throws IOException, InterruptedException {
+    private void computerTurn() throws IOException, InterruptedException, ClassNotFoundException {
 
-        Thread.sleep(2500);
+        Thread.sleep(1800);
 
         String guessedLetter = computerGuess();
 
         System.out.println("You guessed: " + guessedLetter + "\n\n");
+        Thread.sleep(500);
         update(guessedLetter);
     }
 
@@ -272,7 +289,7 @@ public class Game {
      * Shows the current status of the game.
      * @throws IOException
      */
-    public void showGame() throws IOException, InterruptedException {
+    public void showGame() throws IOException, InterruptedException, ClassNotFoundException {
         while (gameRun) { //ensures that game will only play if gameRun has been set to (true)
             if (!gameWin()) { //this code block will run if player has not yet won
 
@@ -292,6 +309,7 @@ public class Game {
                     guessedLetter = Menu.getAlpha();
                 }
                 System.out.println("You guessed: " + guessedLetter + "\n\n");
+                    Thread.sleep(500);
                 update(guessedLetter);
             }
             }

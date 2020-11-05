@@ -103,9 +103,7 @@ public class Menu {
 
         } else if (input == 4) {
             System.out.println("4. Highscore \n");
-            System.out.println("Här kommer en möjlighet att spara Highscore ligga senare"); // todo Player.highscore();
-            Player.showActivePlayers();
-            showMenu();
+            Player.showHighscore();
 
         }else if (input == 5) {
             Player.resetActivePlayers();

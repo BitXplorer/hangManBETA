@@ -644,6 +644,281 @@ public class Player implements Serializable {
         }
     }
 
+// todo nedan är ett utkast på highscore (ca 270 rader ner)
+
+    public static void showHighscore() throws InterruptedException, IOException, ClassNotFoundException {
+
+        System.out.println(currentPlayers);
+
+        System.out.println(" * * * * * * * * *");
+        System.out.println(" *  HangMan 1.0  *  ");
+        System.out.println(" *    HIGSCORE   *  ");
+        System.out.println(" * * * * * * * * *\n");
+        addActiveToCurrent();
+
+        if (currentPlayers.isEmpty()){
+            System.out.println("There is yet no players. Returns to the menu.");
+        }
+        else {
+
+            getHighscoreWins();
+            getHighscoreTotalScore();
+            getHighscoreMaxScore();
+            getHighscoreAvgScore();
+            getHighscoreTotalPlayed();
+            System.out.println("SAVE the highscore to a file. MENU to exit to the menu.");
+
+            Scanner in = new Scanner(System.in);
+            String answer;
+            if (in.hasNext()) {
+                answer = in.next();
+                if (answer.toUpperCase().equals("SAVE")) {
+                    saveHighscore();
+                } else if (answer.toUpperCase().equals("MENU")) {
+                    Menu.showMenu();
+                } else {
+                    System.out.println("Incorrect input. Please enter (SAVE) or (MENU): ");
+                    playersLeft();
+                }
+            }
+        }
+        Menu.showMenu();
+    }
+
+    private static String getHighscoreWins(){
+
+        Player[] statList = new Player[currentPlayers.size()];
+        Player[] tempList = new Player[1];
+
+        for (int j = 0; currentPlayers.size() > j; j++){
+            statList[j] = currentPlayers.get(j);
+        }
+
+            for (int i = 1; statList.length > i; i++) {
+                while (statList[i].wins > statList[i-1].wins) {
+
+                    tempList[0] = statList[i-1];
+                    statList[i-1] = statList[i];
+                    statList[i] = tempList[0];
+                    if ( i == 1 ){
+                    }
+                    else{
+                        i--; // stannar kvar på platsen i
+                    }
+                }
+            }
+
+        String stringTotalPlayed;
+        String s = "";
+
+        System.out.println(" * * * * * * * * *");
+        System.out.println(" * * * WINS  * * *");
+        System.out.println(" * * * * * * * * *");
+        for (int i = 0; 5 > i; i++) {
+            if (statList[i].wins > 0){
+                System.out.println(" " + (i + 1) + ". " + statList[i].name + " " + statList[i].wins);
+                String tempS = (" " + (i + 1) + ". " + statList[i].name + " " + statList[i].wins + "\n");
+                s = s + tempS;
+            } // (else do nothing.)
+        }
+        System.out.println(" * * * * * * * * * \n");
+
+        stringTotalPlayed  = " * * * * * * * * *\n" +" * * * WINS  * * *\n"+" * * * * * * * * *\n" + s + " * * * * * * * * * \n";
+        return stringTotalPlayed;
+    }
+
+    private static String getHighscoreTotalScore() {
+        Player[] statList = new Player[currentPlayers.size()];
+        Player[] tempList = new Player[1];
+
+        for (int j = 0; currentPlayers.size() > j; j++){
+            statList[j] = currentPlayers.get(j);
+        }
+
+        for (int i = 1; statList.length > i; i++) {
+            while (statList[i].totalScore > statList[i-1].totalScore) {
+
+                tempList[0] = statList[i-1]; // Skriver Player från platsen innan till temp
+                statList[i-1] = statList[i]; // Skriver spelaren till platsen innan
+                statList[i] = tempList[0]; // återför Player till spelarens plats
+                if ( i == 1 ){
+                }
+                else{
+                i--; // stannar kvar på platsen i
+                }
+
+            }
+        }
+
+        String stringTotalPlayed;
+        String s = "";
+
+        System.out.println(" * * * * * * * * *");
+        System.out.println(" * *TOTAL SCORE* *");
+        System.out.println(" * * * * * * * * *");
+        for (int i = 0; 5 > i; i++) {
+            if (statList[i].totalScore > 0) {
+                System.out.println(" " + (i + 1) + ". " + statList[i].name + " " + statList[i].totalScore);
+                String tempS = (" " + (i + 1) + ". " + statList[i].name + " " + statList[i].totalScore + "\n");
+                s = s + tempS;
+            } // (else do nothing.)
+        }
+        System.out.println(" * * * * * * * * * \n");
+
+        stringTotalPlayed  = " * * * * * * * * *\n" +" * *TOTAL SCORE* *\n"+" * * * * * * * * *\n" + s + " * * * * * * * * * \n";
+        return stringTotalPlayed;
+    }
+
+    private static String getHighscoreMaxScore() {
+        Player[] statList = new Player[currentPlayers.size()];
+        Player[] tempList = new Player[1];
+
+        for (int j = 0; currentPlayers.size() > j; j++){
+            statList[j] = currentPlayers.get(j);
+        }
+
+        for (int i = 1; statList.length > i; i++) {
+            while (statList[i].maxScore > statList[i-1].maxScore) {
+
+                tempList[0] = statList[i-1];
+                statList[i-1] = statList[i];
+                statList[i] = tempList[0];
+                if ( i == 1 ){
+                }
+                else{
+                    i--; // stannar kvar på platsen i
+                }
+            }
+        }
+
+        String stringTotalPlayed;
+        String s = "";
+
+        System.out.println(" * * * * * * * * *");
+        System.out.println(" * * MAX SCORE * *");
+        System.out.println(" * * * * * * * * *");
+        for (int i = 0; 5 > i; i++) {
+            if (statList[i].maxScore > 0) {
+                System.out.println(" " + (i + 1) + ". " + statList[i].name + " " + statList[i].maxScore);
+                String tempS = (" " + (i + 1) + ". " + statList[i].name + " " + statList[i].maxScore + "\n");
+                s = s + tempS;
+            } // (else do nothing.)
+        }
+        System.out.println(" * * * * * * * * * \n");
+
+        stringTotalPlayed  = " * * * * * * * * *\n" +" * * MAX SCORE * *\n"+" * * * * * * * * *\n" + s + " * * * * * * * * * \n";
+        return stringTotalPlayed;
+    }
+
+    private static String getHighscoreAvgScore() {
+        Player[] statList = new Player[currentPlayers.size()];
+        Player[] tempList = new Player[1];
+
+        for (int j = 0; currentPlayers.size() > j; j++){
+            statList[j] = currentPlayers.get(j);
+        }
+
+        for (int i = 1; statList.length > i; i++) {
+            while (statList[i].avgScore > statList[i-1].avgScore) {
+
+                tempList[0] = statList[i-1];
+                statList[i-1] = statList[i];
+                statList[i] = tempList[0];
+                if ( i == 1 ){
+                }
+                else{
+                    i--; // stannar kvar på platsen i
+                }
+            }
+        }
+
+        String stringTotalPlayed;
+        String s = "";
+
+        System.out.println(" * * * * * * * * *");
+        System.out.println(" * AVERAGE SCORE *");
+        System.out.println(" * * * * * * * * *");
+        for (int i = 0; 5 > i; i++) {
+            if (statList[i].avgScore > 0) {
+                System.out.println(" " + (i + 1) + ". " + statList[i].name + " " + statList[i].avgScore);
+                String tempS = (" " + (i + 1) + ". " + statList[i].name + " " + statList[i].avgScore + "\n");
+                s = s + tempS;
+            } // (else do nothing.)
+        }
+        System.out.println(" * * * * * * * * * \n");
+
+        stringTotalPlayed  = " * * * * * * * * *\n" +" * AVERAGE SCORE *\n"+" * * * * * * * * *\n" + s + " * * * * * * * * * \n";
+        return stringTotalPlayed;
+    }
+
+    private static String getHighscoreTotalPlayed() {
+        Player[] statList = new Player[currentPlayers.size()];
+        Player[] tempList = new Player[1];
+
+        for (int j = 0; currentPlayers.size() > j; j++){
+            statList[j] = currentPlayers.get(j);
+        }
+
+        for (int i = 1; statList.length > i; i++) {
+            while (statList[i].totalPlayed > statList[i-1].totalPlayed) {
+
+                tempList[0] = statList[i-1];
+                statList[i-1] = statList[i];
+                statList[i] = tempList[0];
+                if ( i == 1 ){
+                }
+                else{
+                    i--; // stannar kvar på platsen i
+                }
+            }
+        }
+
+        String stringTotalPlayed;
+        String s = "";
+
+        System.out.println(" * * * * * * * * *");
+        System.out.println(" *  TOTAL PLAYED *");
+        System.out.println(" * * * * * * * * *");
+        for (int i = 0; 5 > i; i++) {
+            if (statList[i].totalPlayed > 0) {
+                System.out.println(" " + (i + 1) + ". " + statList[i].name + " " + statList[i].totalPlayed);
+                String tempS = (" " + (i + 1) + ". " + statList[i].name + " " + statList[i].totalPlayed + "\n");
+                s = s + tempS;
+            } // (else do nothing.)
+        }
+        System.out.println(" * * * * * * * * * \n");
+
+        stringTotalPlayed  = " * * * * * * * * *\n" +" *  TOTAL PLAYED *\n"+" * * * * * * * * *\n" + s + " * * * * * * * * * \n";
+        return stringTotalPlayed;
+    }
+
+    public static void saveHighscore() throws InterruptedException, IOException, ClassNotFoundException {
+
+        String highscoreFile = "highscore.txt"; // Names the file
+        File highscore = new File(highscoreFile); // Creates a file
+
+        PrintWriter out = new PrintWriter(highscore);
+
+        out.println(" * * * * * * * * *");
+        out.println(" *  HangMan 1.0  *  ");
+        out.println(" *    HIGSCORE   *  ");
+        out.println(" * * * * * * * * *\n");
+
+        out.println(getHighscoreWins());
+        out.println(getHighscoreTotalScore());
+        out.println(getHighscoreMaxScore());
+        out.println(getHighscoreAvgScore());
+        out.println(getHighscoreTotalPlayed());
+
+        out.close(); // Important to close the file.
+
+        System.out.println("Highscore saved to file \"highscore.txt\" in the game folder.");
+        System.out.println("Remember to rename or replace the file if you like to keep it.");
+        Menu.showMenu();
+    }
+
+// todo ovan är ett utkast till highscore (ca 270 rader upp)
+
     /**
      * toString();
      * Overrides the Player's information to string.

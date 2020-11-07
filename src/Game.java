@@ -62,14 +62,12 @@ public class Game {
 
             Thread.sleep(3000);
 
-
             Scanner getter = new Scanner(new File("game_words.txt"));
 
             while (getter.hasNextLine()) {
                 gameWord = getter.nextLine();
                 list.add(gameWord);
             }
-
         }
     }
 
@@ -173,12 +171,12 @@ public class Game {
 
         if (in.hasNext()) {
             answer = in.next();
-            if (answer.toUpperCase().equals("YES")) {
+            if (answer.toUpperCase().equals("YES") || answer.toUpperCase().equals("Y")) {
                 Player.addRemoved();
                 Game game2 = new Game();
                 game2.showGame();
             }
-            else if (answer.toUpperCase().equals("NO")) {
+            else if (answer.toUpperCase().equals("NO") || answer.toUpperCase().equals("N")) {
                 gameRun=false;
                 Menu.showMenu();
             }
@@ -208,6 +206,10 @@ public class Game {
         Menu.showMenu();
     }
 
+    /**
+     * computerTurn();
+     * the computer player gets a "random" letter from the computerGuess(); and makes a guess.
+     */
     private void computerTurn() throws IOException, InterruptedException, ClassNotFoundException {
 
         Thread.sleep(1800);
@@ -219,7 +221,13 @@ public class Game {
         update(guessedLetter);
     }
 
-
+    /**
+     * computerGuess();
+     * Makes two arrays for the computer player to "guess" from, one array with only wrong letters and one array with only right letters.
+     * The computer makes the guess by a random choice between the two arrays (20% right choice), and gets a random letter from one of the arrays.
+     * That letter is the computer players guess.
+     * @return computerGuess
+     */
     private String computerGuess(){
 
         String computerGuess;
@@ -266,7 +274,7 @@ public class Game {
         int randomLetterToFail = (int) (Math.random() * guessToFail.size() );
         int randomLetterToWin = (int) (Math.random() * guessToWin.size() );
 
-        if (random <= 2){
+        if (random <= 2){ // Change this number to change how good the computer player is to guess letters. (Between 0-10. 0 = never right. 10 = always right)(2 = 20% right).
             guess = guessToWin.get(randomLetterToWin);
             computerGuess = String.valueOf(guess);
             return computerGuess;
@@ -281,9 +289,7 @@ public class Game {
             computerGuess = String.valueOf(guess);
             return computerGuess;
         }
-
     }
-
 
     /**
      * Shows the current status of the game.
@@ -317,7 +323,6 @@ public class Game {
                 System.out.println(Player.getName(Player.getPlayerNumber())+"! You won!");
                 System.out.println("The word was: " + getSecretArray());
 
-                //Player.addWins(Player.getPlayerNumber()); //TODO denna bör ske när en spelare finns kvar
                 Player.addPoint(Player.getPlayerNumber());
                 Player.updateAverageScore();
                 Player.updateMaxScore();

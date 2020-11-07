@@ -26,7 +26,6 @@ public class Menu {
         return value;
     }
 
-
     /**
      * getString is a method to get a Scanner for the player to print a string-word without space (" ").
      * @return String line
@@ -44,12 +43,12 @@ public class Menu {
         }
         return input;
     }
+
     /**
      * Validates input, returns if input is a letter.
      * @return First letter in input.
      */
-    public static String getAlpha()
-    {
+    public static String getAlpha() {
         char alpha = 0;
         Scanner in = new Scanner(System.in);
         in.useDelimiter("");
@@ -68,8 +67,8 @@ public class Menu {
     }
 
     /**
-     * Prints the menu and the four choices, 1-4.
-     * Also validates the input between 1-4.
+     * Prints the menu and the five choices, 1-5.
+     * Also validates the input between 1-5.
      * Takes the player to the player's choice.
      */
     public static void showMenu() throws IOException, InterruptedException, ClassNotFoundException {
@@ -90,7 +89,7 @@ public class Menu {
         }
         if (input == 1) {
             System.out.println("1. Play\n");
-            Player.resetActivePlayers(); // Set hasPlayerNumber to zero, set playerNumber to zero, activePlayers.clear(); and removedPlayers.clear();.
+            Player.resetPlayers(); // Set hasPlayerNumber to zero, set playerNumber to zero, activePlayers.clear();, removedPlayers.clear(); and clearCurrentScore();.
             Player.addPlayer();
 
         } else if (input == 2) {
@@ -103,10 +102,10 @@ public class Menu {
 
         } else if (input == 4) {
             System.out.println("4. Highscore \n");
-            Player.showHighscore();
+            Player.highScore();
 
         }else if (input == 5) {
-            Player.resetActivePlayers();
+            Player.resetPlayers();
             System.out.println("5. Quit \n Thanks for playing. =)");
     }
     }

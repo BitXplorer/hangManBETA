@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="hangMangProject2:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/hangMangProject2_jar</output-path>
+    <root id="archive" name="hangMangProject2.jar">
+      <element id="module-output" name="hangMangProject2" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/19.0.0/annotations-19.0.0.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/0.gif" />
+      <element id="file-copy" path="$PROJECT_DIR$/1.gif" />
+      <element id="file-copy" path="$PROJECT_DIR$/2.gif" />
+      <element id="file-copy" path="$PROJECT_DIR$/3.gif" />
+      <element id="file-copy" path="$PROJECT_DIR$/4.gif" />
+      <element id="file-copy" path="$PROJECT_DIR$/5.gif" />
+      <element id="file-copy" path="$PROJECT_DIR$/6.gif" />
+      <element id="file-copy" path="$PROJECT_DIR$/7.gif" />
+      <element id="file-copy" path="$PROJECT_DIR$/game_words.txt" />
+      <element id="file-copy" path="$PROJECT_DIR$/hGameOver.gif" />
+      <element id="file-copy" path="$PROJECT_DIR$/hWon.gif" />
+    </root>
+  </artifact>
+</component>
